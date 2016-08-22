@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>File Upload</title>
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/styles.css">
+    </head>
+    <body>
+        <div id="uploads"></div>
+        <div class="dropzone" id="dropzone">Adjuntar archivos aqui!</div>
+        <script>
+            (function(){
+                var dropzone = document.getElementById('dropzone');
+
+                var upload= function(files){
+                    var formData = new FormData(),
+                        xhr = new XMLHttpRequest(),
+                        x;
+
+                        for(x = 0; x < files.length; x = x + 1){
+                            formData.append('files[]', files[x]);
+                        }
+
+                        xhr.onload = function(){
+                            var data = this.responseText;
+                            console.log(data);
+                        }
+
+                        xhr.open('post', 'uploadFile.php');
+                        xhr.send(formData);
+                }
+
+                dropzone.ondrop = function(e){
+                    e.preventDefault();
+                    this.className = 'dropzone';
+                    upload(e.dataTransfer.files);
+                }
+
+                dropzone.ondragover = function(){
+                    this.className = 'dropzone dragover';
+                    return false;
+                };
+
+                dropzone.ondragleave = function(){
+                    this.className = 'dropzone';
+                    return false;
+                };
+            }());
+        </script>
+    </body>
+</html>
