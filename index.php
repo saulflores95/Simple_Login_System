@@ -36,7 +36,7 @@
 <?php
                             if(isset($_SESSION['Email'])){
                                 if($_SESSION['id'] == "admin"){
-                                echo "<a href='admin.php'>" .$_SESSION['Email']. "</a>";
+                                  echo "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='.bs-example-modal-sm'>" .$_SESSION['Email']. "</button>";
                             }else{
                                 echo "<a href='client.php'>" .$_SESSION['Email']. "</a>";
                             }
@@ -69,6 +69,68 @@
         <h2 class="text-center">People Love It!</h2>
 
     </section>
+
+    <?php
+      include("connect.php");
+      error_reporting( error_reporting() & ~E_NOTICE );
+
+       $FILE_NAME = $_FILES['file']['name'];
+       $FILE_SIZE = $_FILES['file']['size'];
+       $FILE_TYPE = $_FILES['file']['type'];
+       $tmp_name =  $_FILES['file']['tmp_name'];
+       $client = $_POST['filter'];
+       $dropDownContent = '';
+       $userFilter = mysql_query("select Email FROM user");
+       while($row = mysql_fetch_array($userFilter)){
+         $dropDownContent .="<option>" . $row['Email'] . "</option>";
+       }
+
+       $menu="
+           <select class='form-control' name='filter' id='filter'>
+             " . $dropDownContent . "
+           </select>";
+      if (isset($FILE_NAME)){
+        if(!empty($FILE_NAME)){
+          $location = 'assets/facturas/';
+          if (move_uploaded_file($tmp_name, $location.$FILE_NAME)) {
+
+            $result= mysql_query("INSERT INTO files (id, FILE_NAME, CLIENT_EMAIL,FILE_SIZE,FILE_TYPE) VALUES (NULL,' $FILE_NAME', '$client ', '$FILE_SIZE',' $FILE_TYPE')", $conn);
+
+            echo 'Terminado Correctamente';
+          }
+        }else{
+          echo 'Escoje un archivo!';
+        }
+      }
+
+     ?>
+
+    <div class="containers" style="margin-top:100px;">
+       <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+         <div class="modal-dialog modal-sm" role="document">
+           <div class="modal-content" style="padding-left:30px; padding-right:30px;">
+             <div class="form-group">
+               <br><br>
+             <form action="index.php"  method="POST" enctype="multipart/form-data">
+               <?php
+                  echo $menu;
+                ?>
+               <label for="file-upload" class="custom-file-upload">
+                   <i class="glyphicon glyphicon-upload"></i> Sube Factura
+               </label>
+               <input id="file-upload" type="file" name="file"/>
+                <br>
+                <input class="btn" type="submit" value="Submit" />
+              </div>
+             </form>
+           </div>
+         </div>
+       </div>
+    </div>
+
+
+
+
     <footer class="site-footer">
         <div class="container">
             <div class="row">

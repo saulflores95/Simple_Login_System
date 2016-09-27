@@ -73,7 +73,7 @@
 
 
             $updateQuery = mysql_query("UPDATE user SET Fname='$_POST[fname]', Lname='$_POST[lname]', Email='$_POST[email]', user_type='$_POST[usser_type]', FILE_NAME='$file_name', FILE_SIZE='$file_size', FILE_TYPE='$file_type'  WHERE Email = '$_POST[hidden]'");
-            move_uploaded_file($file_tmp_name,"assets/img/$file_name");
+            move_uploaded_file($file_tmp_name,"facturas/$file_name");
          };
          if(isset($_POST['delete'])){
             $deleteQuery = mysql_query("DELETE FROM user WHERE Email = '$_POST[hidden]'");
@@ -109,6 +109,7 @@
              echo "</form>";
 
          }
+
 
          echo "</table>";
 

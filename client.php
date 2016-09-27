@@ -66,30 +66,23 @@
          $user = $_SESSION['Email'];
 
         // $result = mysql_query("SELECT * FROM user where Email IN(SELECT email FROm user GROUP by Email HAVING count(*)>1)");
-        $result =  mysql_query("SELECT * FROM user WHERE Email='$user'");
-         echo "<table class='table table-hover'>
-         <tr>
-         <th>Nombre</th>
-         <th>Apellido</th>
-         <th>Correo</th>
-         <th>Factura</th>
+        $result = mysql_query("SELECT user.Email, files.FILE_NAME, files.date_Added FROM user LEFT OUTER JOIN files ON user.Email = files.CLIENT_EMAIL WHERE files.CLIENT_EMAIL='$user'");
+        echo "<table class='table table-hover'>
+        <tr>
+        <th>Factura</th>
+        <th>Fecha</th>
+        </tr>";
 
-         </tr>";
-
-         while($user = mysql_fetch_array($result)){
-             echo "<form action=admin.php method=post>";
+         while($data = mysql_fetch_array($result)){
+             $url= preg_replace('/\s+/', '', $data['FILE_NAME']);
              echo "<tr>";
-             echo "<td>". "<input class=form-control  disabled='disabled' type=text name=fname value=" .  $user['Fname'] . " /> </td>";
-             echo "<td>". "<input class=form-control  disabled='disabled' type=text name=lname value=" . $user['Lname'] . " /> </td>";
-             echo "<td>". "<input class=form-control type=email name=email value=" . $user['Email'] . " /> </td>";
-             echo "<td><a href=assets/img/".$user['FILE_NAME'].">Factura</a></td>";
-
-             echo "<td>". "<input class=form-control type=hidden name=hidden value=" .  $user['Fname'] . " </td>";
-
+             echo "<td><a href='facturas/".$url."' target=_blank>".$data['FILE_NAME']."</a></td>";
+             echo "<td>" . $data['date_Added'] . "</td>";
+             echo "<td><a href='facturas/".$url."' download='".$url."'><span class='glyphicon glyphicon-download'></span></a></td>";
              echo "</tr>";
-             echo "</form>";
 
          }
+
 
          echo "</table>";
 
